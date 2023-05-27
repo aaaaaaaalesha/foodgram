@@ -7,6 +7,7 @@ class User(AbstractUser):
     email = models.EmailField(
         max_length=254,
         unique=True,
+        null=False,
     )
 
     class Meta:
