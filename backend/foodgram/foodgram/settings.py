@@ -29,10 +29,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    # Authentication.
+    'djoser',
     'rest_framework.authtoken',
     # For work with images, delete maybe.
     'sorl.thumbnail',
-    'djoser',
+    # Filtering objects in views.
+    'django_filters',
+    # My apps.
     'users',
     'recipes',
     'api',
