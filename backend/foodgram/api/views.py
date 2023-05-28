@@ -1,11 +1,13 @@
 from rest_framework import (
     mixins,
     viewsets,
+    pagination,
 )
 
 from recipes.models import (
     Tag,
     Ingredient,
+    Recipe,
 )
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -22,6 +24,7 @@ from .serializers import (
 
 from .filters import (
     IngredientFilterSet,
+    RecipeFilterSet,
 )
 
 
@@ -45,3 +48,14 @@ class IngredientViewSet(
     permission_classes = (IsAdminOrReadOnly,)
     filterset_class = IngredientFilterSet
     filter_backends = (DjangoFilterBackend,)
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    class RecipesPagination(pagination.PageNumberPagination):
+        page_size_query_param = 'limit'
+
+    queryset = Recipe.objects.all()
+    permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
+    pagination_class = RecipesPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilterSet
