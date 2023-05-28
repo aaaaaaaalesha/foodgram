@@ -81,6 +81,10 @@ class Recipe(models.Model):
         'Описание',
         **REQUIRED_KWARGS,
     )
+    pub_date = models.DateTimeField(
+        'Дата публикации',
+        auto_now_add=True,
+    )
     tags = models.ManyToManyField(
         Tag,
         related_name='recipes',
@@ -109,7 +113,7 @@ class Recipe(models.Model):
         return self.name
 
     class Meta:
-        # ordering =
+        ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
