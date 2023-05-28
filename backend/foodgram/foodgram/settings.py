@@ -30,8 +30,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
+    # For work with images, delete maybe.
+    'sorl.thumbnail',
     'djoser',
     'users',
+    'recipes',
     'api',
 ]
 
