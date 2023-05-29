@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # DRF.
     'rest_framework',
     # Authentication.
     'djoser',
@@ -36,6 +38,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     # Filtering objects in views.
     'django_filters',
+
     # My apps.
     'users',
     'recipes',
