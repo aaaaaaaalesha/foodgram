@@ -11,6 +11,7 @@ from recipes.models import (
     Recipe,
     ShoppingCart,
     Favourite,
+    IngredientInRecipe,
 )
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -110,3 +111,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def favorite(self, request, pk):
         return self.__recipe_handler(Favourite, request, pk)
+
+    @decorators.action(
+        detail=False,
+        permission_classes=[IsAuthenticated]
+    )
+    def download_shopping_cart(self, request):
+        return recipe_services.collect_shopping_cart(request.user)
