@@ -9,8 +9,7 @@ load_dotenv(os.path.join(BASE_DIR.parent.parent, 'infra/.env'), verbose=True)
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='123')
 
-# TODO: don't remember to change it with os.getenv('DEBUG', default='False') == 'True'
-DEBUG = True
+DEBUG = os.getenv('DEBUG', default='False') == 'True'
 
 ALLOWED_HOSTS = [
     'localhost',
