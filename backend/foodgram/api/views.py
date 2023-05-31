@@ -3,7 +3,9 @@ from rest_framework import (
     viewsets,
     pagination,
     decorators,
+    permissions,
 )
+from django_filters.rest_framework import DjangoFilterBackend
 
 from recipes.models import (
     Tag,
@@ -14,12 +16,9 @@ from recipes.models import (
     IngredientInRecipe,
 )
 
-from django_filters.rest_framework import DjangoFilterBackend
-
 from .permissions import (
     IsAdminOrReadOnly,
     IsAuthorOrReadOnly,
-    IsAuthenticated,
     SAFE_METHODS,
 )
 
@@ -99,7 +98,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @decorators.action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated],
+        permission_classes=[permissions.IsAuthenticated],
     )
     def shopping_cart(self, request, pk):
         return self.__recipe_handler(ShoppingCart, request, pk)
@@ -107,14 +106,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @decorators.action(
         detail=True,
         methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated],
+        permission_classes=[permissions.IsAuthenticated],
     )
     def favorite(self, request, pk):
         return self.__recipe_handler(Favourite, request, pk)
 
     @decorators.action(
         detail=False,
-        permission_classes=[IsAuthenticated]
+        permission_classes=[permissions.IsAuthenticated]
     )
     def download_shopping_cart(self, request):
         return recipe_services.collect_shopping_cart(request.user)

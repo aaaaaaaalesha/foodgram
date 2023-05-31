@@ -1,13 +1,11 @@
-from django.db.models import F
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import (
+    IntegerField,
     ModelSerializer,
     SerializerMethodField,
-    IntegerField,
     PrimaryKeyRelatedField,
 )
 
@@ -60,52 +58,6 @@ class BaseRecipeSerializer(ModelSerializer):
             'image',
             'cooking_time',
         )
-
-
-class SubscribeSerializer(BaseUserSerializer):
-    recipes_count = SerializerMethodField()
-    recipes = SerializerMethodField()
-
-    class Meta(BaseUserSerializer.Meta):
-        fields = (
-            *BaseUserSerializer.Meta.fields,
-            'recipes_count',
-            'recipes',
-        )
-        read_only_fields = USER_REQUIRED_FIELDS
-
-    def validate(self, data):
-        author = self.instance
-        user = self.context.get('request').user
-        if Subscription.objects.filter(author=author, user=user).exists():
-            raise ValidationError(
-                detail=f'Вы уже подписаны на пользователя {author.first_name}',
-                code=status.HTTP_400_BAD_REQUEST
-            )
-        if user == author:
-            raise ValidationError(
-                detail='Нельзя подписаться на себя',
-                code=status.HTTP_400_BAD_REQUEST
-            )
-        return data
-
-    def get_recipes_count(self, obj):
-        return obj.recipes.count()
-
-    def get_recipes(self, obj):
-        request = self.context.get('request')
-        limit = request.GET.get('recipes_limit')
-        recipes = (
-            obj.recipes.all()[:int(limit)]
-            if limit else obj.recipes.all()
-        )
-        serializer = BaseRecipeSerializer(
-            recipes,
-            many=True,
-            read_only=True,
-        )
-        serializer.is_valid(raise_exception=True)
-        return serializer.data
 
 
 class RecipeReadSerializer(ModelSerializer):
@@ -251,3 +203,52 @@ class RecipeModifySerializer(ModelSerializer):
             'text',
             'cooking_time',
         )
+
+
+class SubscribeSerializer(BaseUserSerializer):
+    recipes_count = SerializerMethodField()
+    recipes = SerializerMethodField()
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
+
+    class Meta(BaseUserSerializer.Meta):
+        fields = (
+            *BaseUserSerializer.Meta.fields,
+            'recipes_count',
+            'recipes',
+        )
+        read_only_fields = USER_REQUIRED_FIELDS
+
+    def validate(self, data):
+        author = self.instance
+        user = self.context.get('request').user
+        if Subscription.objects.filter(
+                author=author,
+                user=user,
+        ).exists():
+            raise ValidationError(
+                detail=f'Вы уже подписаны на пользователя {author.first_name}',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+
+        if user == author:
+            raise ValidationError(
+                detail='Нельзя подписаться на себя',
+                code=status.HTTP_400_BAD_REQUEST
+            )
+        return data
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        limit = request.GET.get('recipes_limit')
+        recipes = (
+            obj.recipes.all()[:int(limit)]
+            if limit else obj.recipes.all()
+        )
+        serializer = BaseRecipeSerializer(
+            recipes,
+            many=True,
+            read_only=True,
+        )
+        return serializer.data
