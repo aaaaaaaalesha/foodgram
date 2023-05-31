@@ -59,7 +59,6 @@ class Ingredient(models.Model):
         return self.name
 
     class Meta:
-        # ordering =
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
 
@@ -100,7 +99,6 @@ class Recipe(models.Model):
     )
     image = models.ImageField(
         'Картинка',
-        upload_to='recipes/',
         **REQUIRED_KWARGS,
     )
     cooking_time = models.PositiveIntegerField(
@@ -172,4 +170,28 @@ class ShoppingCart(models.Model):
                 fields=('user', 'recipe',),
                 name='unique_shopping_cart',
             )
+        ]
+
+
+class Favourite(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Пользователь',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Рецепт',
+    )
+
+    class Meta:
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранное'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_favourite'),
         ]

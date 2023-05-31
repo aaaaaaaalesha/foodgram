@@ -1,3 +1,5 @@
+from typing import Union
+
 from django.shortcuts import get_object_or_404
 
 from rest_framework import status, response
@@ -5,14 +7,24 @@ from rest_framework import status, response
 from recipes.models import (
     Recipe,
     ShoppingCart,
+    Favourite,
 )
+from users.models import User
 
 from api.serializers import BaseRecipeSerializer
 
 
-def add_recipe_service(model, request, id_) -> response.Response:
+def add_recipe_service(
+        model: Union[ShoppingCart, Favourite],
+        user: User,
+        id_: int,
+) -> response.Response:
+    """
+    Удаление рецепта по идентификатору из сущности переданной модели.
+    Модель должна иметь внешние ключи на сущности User и Recipe.
+    """
     found_recipe = model.objects.filter(
-        user=request.user,
+        user=user,
         recipe__id=id_,
     )
     if found_recipe.exists():
@@ -26,7 +38,7 @@ def add_recipe_service(model, request, id_) -> response.Response:
     serializer.is_valid(raise_exception=True)
 
     model.objects.create(
-        user=request.user,
+        user=user,
         recipe=found_recipe,
     )
     return response.Response(
@@ -35,9 +47,17 @@ def add_recipe_service(model, request, id_) -> response.Response:
     )
 
 
-def delete_recipe_service(model, request, id_):
+def delete_recipe_service(
+        model: Union[ShoppingCart, Favourite],
+        user: User,
+        id_: int,
+) -> response.Response:
+    """
+    Удаление рецепта по идентификатору из сущности переданной модели.
+    Модель должна иметь внешние ключи на сущности User и Recipe.
+    """
     found_recipe = model.objects.filter(
-        user=request.user,
+        user=user,
         recipe__id=id_,
     )
 

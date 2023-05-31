@@ -1,11 +1,8 @@
-from django.shortcuts import get_object_or_404
 from rest_framework import (
-    status,
     mixins,
     viewsets,
     pagination,
     decorators,
-    response,
 )
 
 from recipes.models import (
@@ -13,6 +10,7 @@ from recipes.models import (
     Ingredient,
     Recipe,
     ShoppingCart,
+    Favourite,
 )
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -27,7 +25,8 @@ from .permissions import (
 from .serializers import (
     TagSerializer,
     IngredientSerializer,
-    BaseRecipeSerializer,
+    RecipeModifySerializer,
+    RecipeReadSerializer,
 )
 
 from .filters import (
@@ -70,25 +69,44 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilterSet
     filter_backends = (DjangoFilterBackend,)
 
-    @decorators.action(
-        detail=True,
-        methods=['POST', 'DELETE'],
-        permission_classes=[IsAuthenticated]
-    )
-    def shopping_cart(self, request, id_):
+    @staticmethod
+    def __recipe_handler(model, request, id_):
         if request.method == 'POST':
-            # Добавление рецепта в список покупок.
+            # Добавление рецепта в экземпляр модели.
             return recipe_services.add_recipe_service(
-                model=ShoppingCart,
-                request=request,
+                model=model,
+                user=request.user,
                 id_=id_,
             )
 
-        # Удаление рецепта из списка покупок.
-        recipe_services.delete_recipe_service(
-            model=ShoppingCart,
-            request=request,
+        # Удаление рецепта из экземпляра модели.
+        return recipe_services.delete_recipe_service(
+            model=model,
+            user=request.user,
             id=id_,
         )
 
-    # TODO: Add favorite viewset.
+    def perform_create(self, serializer):
+        serializer.save(author=self.request.user)
+
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return RecipeModifySerializer
+
+        return RecipeReadSerializer
+
+    @decorators.action(
+        detail=True,
+        methods=['POST', 'DELETE'],
+        permission_classes=[IsAuthenticated],
+    )
+    def shopping_cart(self, request, pk):
+        self.__recipe_handler(ShoppingCart, request, pk)
+
+    @decorators.action(
+        detail=True,
+        methods=['POST', 'DELETE'],
+        permission_classes=[IsAuthenticated],
+    )
+    def favorite(self, request, pk):
+        self.__recipe_handler(Favourite, request, pk)
