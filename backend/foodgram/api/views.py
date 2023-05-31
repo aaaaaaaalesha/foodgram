@@ -70,20 +70,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
 
     @staticmethod
-    def __recipe_handler(model, request, id_):
+    def __recipe_handler(model, request, pk):
         if request.method == 'POST':
             # Добавление рецепта в экземпляр модели.
             return recipe_services.add_recipe_service(
                 model=model,
                 user=request.user,
-                id_=id_,
+                id_=pk,
             )
 
         # Удаление рецепта из экземпляра модели.
         return recipe_services.delete_recipe_service(
             model=model,
             user=request.user,
-            id=id_,
+            id_=pk,
         )
 
     def perform_create(self, serializer):
@@ -101,7 +101,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def shopping_cart(self, request, pk):
-        self.__recipe_handler(ShoppingCart, request, pk)
+        return self.__recipe_handler(ShoppingCart, request, pk)
 
     @decorators.action(
         detail=True,
@@ -109,4 +109,4 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def favorite(self, request, pk):
-        self.__recipe_handler(Favourite, request, pk)
+        return self.__recipe_handler(Favourite, request, pk)

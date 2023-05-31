@@ -35,7 +35,6 @@ def add_recipe_service(
 
     found_recipe = get_object_or_404(Recipe, id=id_)
     serializer = BaseRecipeSerializer(found_recipe)
-    serializer.is_valid(raise_exception=True)
 
     model.objects.create(
         user=user,
