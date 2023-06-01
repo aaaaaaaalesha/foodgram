@@ -1,5 +1,4 @@
 from django.db import models
-
 from django.core.validators import (
     RegexValidator,
     MinValueValidator,
@@ -36,12 +35,12 @@ class Tag(models.Model):
         **REQUIRED_KWARGS,
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
+
+    def __str__(self):
+        return self.name
 
 
 class Ingredient(models.Model):
@@ -55,9 +54,6 @@ class Ingredient(models.Model):
         max_length=200,
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
@@ -67,6 +63,9 @@ class Ingredient(models.Model):
                 name='unique_ingredient',
             )
         ]
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -113,13 +112,13 @@ class Recipe(models.Model):
         **REQUIRED_KWARGS,
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
+
+    def __str__(self):
+        return self.name
 
 
 class IngredientInRecipe(models.Model):
@@ -142,16 +141,22 @@ class IngredientInRecipe(models.Model):
         **REQUIRED_KWARGS,
     )
 
+    class Meta:
+        verbose_name = 'Ингридиент в рецепте'
+        verbose_name_plural = 'Ингридиенты в рецепте'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('ingredient', 'recipe'),
+                name='unique_ingredient_in_recipe',
+            ),
+        ]
+
     def __str__(self):
         return (
             f'{self.ingredient.name}: '
             f'{self.amount} ({self.ingredient.measurement_unit}) '
             f'в рецепте {self.recipe.name}'
         )
-
-    class Meta:
-        verbose_name = 'Ингридиент в рецепте'
-        verbose_name_plural = 'Ингридиенты в рецепте'
 
 
 class ShoppingCart(models.Model):

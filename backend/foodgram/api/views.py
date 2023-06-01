@@ -15,25 +15,21 @@ from recipes.models import (
     Favourite,
     IngredientInRecipe,
 )
-
 from .permissions import (
     IsAdminOrReadOnly,
     IsAuthorOrReadOnly,
     SAFE_METHODS,
 )
-
 from .serializers import (
     TagSerializer,
     IngredientSerializer,
     RecipeModifySerializer,
     RecipeReadSerializer,
 )
-
 from .filters import (
     IngredientFilterSet,
     RecipeFilterSet,
 )
-
 from recipes.services import recipe_services
 
 

@@ -4,18 +4,16 @@ from datetime import datetime
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-
 from rest_framework import status, response
 
+from users.models import User
+from api.serializers import BaseRecipeSerializer
 from recipes.models import (
     Recipe,
     ShoppingCart,
     Favourite,
     IngredientInRecipe,
 )
-from users.models import User
-
-from api.serializers import BaseRecipeSerializer
 
 
 def add_recipe_service(
@@ -88,11 +86,11 @@ def collect_shopping_cart(user: User):
     ).values(
         'ingredient__name',
         'ingredient__measurement_unit',
-    ).annotate(amount=Sum('amount'))
+    ).annotate(total_amount=Sum('amount'))
 
     ingredient_list = '\n'.join(
         f'• {ingredient["ingredient__name"]} '
-        f'- {ingredient["amount"]} '
+        f'- {ingredient["total_amount"]} '
         f'({ingredient["ingredient__measurement_unit"]})'
         for ingredient in ingredients
     )

@@ -1,6 +1,5 @@
 from djoser.views import UserViewSet
 from django.shortcuts import get_object_or_404
-
 from rest_framework import (
     status,
     response,
@@ -54,6 +53,7 @@ class CustomUserViewSet(UserViewSet):
                 context={'request': request},
             )
             serializer.is_valid(raise_exception=True)
+            serializer.save(user=user, author=author)
             Subscription.objects.create(user=user, author=author)
             return response.Response(
                 serializer.data,
