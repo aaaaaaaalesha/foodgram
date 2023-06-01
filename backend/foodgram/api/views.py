@@ -13,7 +13,6 @@ from recipes.models import (
     Recipe,
     ShoppingCart,
     Favourite,
-    IngredientInRecipe,
 )
 from .permissions import (
     IsAdminOrReadOnly,

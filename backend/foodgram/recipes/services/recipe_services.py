@@ -75,7 +75,10 @@ def delete_recipe_service(
 
 
 def collect_shopping_cart(user: User):
-    """Формирование списка покупок для пользователя на основе добавленных рецептов."""
+    """
+    Формирование списка покупок для пользователя на основе
+    добавленных рецептов.
+    """
     if not user.shopping_cart.exists():
         return response.Response(
             status=status.HTTP_400_BAD_REQUEST,

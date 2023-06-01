@@ -165,7 +165,6 @@ class RecipeModifySerializer(ModelSerializer):
 
     @transaction.atomic
     def create_ingredients_amounts(self, ingredients, recipe):
-        print(ingredients)
         IngredientInRecipe.objects.bulk_create([
             IngredientInRecipe(
                 ingredient=ingredient['ingredient']['id'],
@@ -236,6 +235,12 @@ class SubscribeSerializer(BaseUserSerializer):
             'recipes',
         )
         read_only_fields = USER_REQUIRED_FIELDS
+
+    def save(self, **kwargs):
+        user = self.context.get('request').user
+        author = self.instance
+        Subscription.objects.create(user=user, author=author)
+        return super().save(**kwargs)
 
     def validate(self, data):
         author = self.instance

@@ -6,7 +6,6 @@ from rest_framework import (
     pagination,
     decorators,
     permissions,
-
 )
 
 from api.serializers import BaseUserSerializer, SubscribeSerializer
@@ -54,7 +53,6 @@ class CustomUserViewSet(UserViewSet):
             )
             serializer.is_valid(raise_exception=True)
             serializer.save(user=user, author=author)
-            Subscription.objects.create(user=user, author=author)
             return response.Response(
                 serializer.data,
                 status=status.HTTP_201_CREATED,

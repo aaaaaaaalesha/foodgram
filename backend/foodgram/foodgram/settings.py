@@ -9,13 +9,14 @@ load_dotenv(os.path.join(BASE_DIR.parent.parent, 'infra/.env'), verbose=True)
 
 SECRET_KEY = os.getenv('SECRET_KEY', default='123')
 
-DEBUG = os.getenv('DEBUG', default='False') == 'True'
+DEBUG = os.getenv('DEBUG', default='False') == 'False'
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '[::1]',
     'testserver',
+    '51.250.20.4'
 ]
 
 # Application definition
@@ -144,7 +145,8 @@ USE_TZ = os.getenv('DEBUG', default='False') == 'True'
 
 # Static files (CSS, JavaScript, Images)
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

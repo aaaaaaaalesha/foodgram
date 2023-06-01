@@ -7,7 +7,6 @@ from .models import (
     Recipe,
     ShoppingCart,
     Tag,
-
 )
 
 admin.site.register(Tag)
