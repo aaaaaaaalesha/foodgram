@@ -7,16 +7,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(os.path.join(BASE_DIR.parent.parent, 'infra/.env'), verbose=True)
 
-SECRET_KEY = os.getenv('SECRET_KEY', default='123')
+SECRET_KEY = os.environ.get('SECRET_KEY', default='123')
 
-DEBUG = os.getenv('DEBUG', default='False') == 'False'
+DEBUG = os.environ.get('DEBUG', default='False') == 'False'
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '[::1]',
     'testserver',
-    '51.250.20.4'
+    '158.160.22.148'
 ]
 
 # Application definition
@@ -81,8 +81,8 @@ WSGI_APPLICATION = 'foodgram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': os.environ.get('POSTGRES_DB', BASE_DIR / 'db.sqlite3'),
+        'ENGINE': os.environ.get('DB_ENGINE', default='django.db.backends.sqlite3'),
+        'NAME': os.environ.get('POSTGRES_DB', default=BASE_DIR / 'db.sqlite3'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
         'HOST': os.environ.get('DB_HOST'),
@@ -139,9 +139,9 @@ LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = os.getenv('DEBUG', default='False') == 'True'
+USE_I18N = os.environ.get('DEBUG', default='False') == 'True'
 
-USE_TZ = os.getenv('DEBUG', default='False') == 'True'
+USE_TZ = os.environ.get('DEBUG', default='False') == 'True'
 
 # Static files (CSS, JavaScript, Images)
 

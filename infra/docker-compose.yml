@@ -11,9 +11,7 @@ services:
       - .env
 
   backend:
-    build:
-      context: ../backend
-      dockerfile: Dockerfile
+    image: aaaaaaaalesha/infra-backend:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -24,9 +22,7 @@ services:
       - ./.env
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: aaaaaaaalesha/infra-frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
