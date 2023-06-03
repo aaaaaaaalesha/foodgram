@@ -94,7 +94,7 @@ jobs:
             sudo echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
             sudo echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
             sudo echo DEBUG=False >> .env
-
+            
             sudo docker compose stop
             
             sudo docker compose rm backend
