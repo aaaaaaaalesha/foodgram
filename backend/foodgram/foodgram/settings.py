@@ -16,7 +16,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '[::1]',
     'testserver',
-    '158.160.22.148'
+    '158.160.22.148',
+    'foodrecipes.hopto.org',
 ]
 
 # Application definition
